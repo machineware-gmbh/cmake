@@ -26,17 +26,25 @@ function(clone_github_repo target repo)
     find_package(Git REQUIRED)
     set(cmd clone --depth 1)
 
+    if(NOT ${_pfx}_TAG STREQUAL "default")
+        set(cmd ${cmd} --branch ${${_pfx}_TAG})
+    endif()
+
+    set(url "https://github.com/${${_pfx}_REPO}")
+    message(STATUS "Fetching ${target} from ${${_pfx}_REPO} [${${_pfx}_TAG}]")
+    execute_process(COMMAND ${GIT_EXECUTABLE} ${cmd} ${url} ${${_pfx}_HOME}
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                    ERROR_VARIABLE err RESULT_VARIABLE res OUTPUT_QUIET)
+    if(NOT res)
+        return()
+    endif()
+
     if(DEFINED ENV{GITHUB_TOKEN})
         set(url "https://oauth2:$ENV{GITHUB_TOKEN}@github.com/${${_pfx}_REPO}")
     else()
         set(url "git@github.com:${${_pfx}_REPO}")
     endif()
 
-    if(NOT ${_pfx}_TAG STREQUAL "default")
-        set(cmd ${cmd} --branch ${${_pfx}_TAG})
-    endif()
-
-    message(STATUS "Fetching ${target} from ${${_pfx}_REPO} [${${_pfx}_TAG}]")
     execute_process(COMMAND ${GIT_EXECUTABLE} ${cmd} ${url} ${${_pfx}_HOME}
                     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                     ERROR_VARIABLE err RESULT_VARIABLE res OUTPUT_QUIET)
