@@ -24,6 +24,7 @@ function(clone_github_repo target repo)
     set(${_pfx}_TAG "default" CACHE STRING "${target} repository tag/branch")
 
     find_package(Git REQUIRED)
+    set(ENV{GIT_TERMINAL_PROMPT} 0)
     set(cmd clone --depth 1)
 
     if(NOT ${_pfx}_TAG STREQUAL "default")
