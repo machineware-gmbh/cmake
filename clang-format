@@ -27,6 +27,7 @@ BreakStringLiterals: true
 BreakBeforeBraces: Custom
 BraceWrapping:
   AfterClass: true
+  SplitEmptyRecord: false
 
 SpaceBeforeCtorInitializerColon: false
 SpacesBeforeTrailingComments: 1
