@@ -20,19 +20,18 @@ function(clone_github_repo target repo)
     string(TOUPPER ${target} _pfx)
     string(REPLACE "-" "_" _pfx ${_pfx})
 
-    set(${_pfx}_REPO "${repo}" CACHE STRING "${target} repository url")
-    set(${_pfx}_TAG "default" CACHE STRING "${target} repository tag/branch")
-
     find_package(Git REQUIRED)
-    set(ENV{GIT_TERMINAL_PROMPT} 0)
+    set(ENV{GIT_TERMINAL_PROMPT} 0) # supress interactive git login prompts
     set(cmd clone --depth 1)
 
-    if(NOT ${_pfx}_TAG STREQUAL "default")
+    if(${_pfx}_TAG)
         set(cmd ${cmd} --branch ${${_pfx}_TAG})
+        message(STATUS "Fetching ${target} from ${${_pfx}_REPO} [${${_pfx}_TAG}]")
+    else()
+        message(STATUS "Fetching ${target} from ${${_pfx}_REPO} [default branch]")
     endif()
 
     set(url "https://github.com/${${_pfx}_REPO}")
-    message(STATUS "Fetching ${target} from ${${_pfx}_REPO} [${${_pfx}_TAG}]")
     execute_process(COMMAND ${GIT_EXECUTABLE} ${cmd} ${url} ${${_pfx}_HOME}
                     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                     ERROR_VARIABLE err RESULT_VARIABLE res OUTPUT_QUIET)
@@ -54,10 +53,52 @@ function(clone_github_repo target repo)
     endif()
 endfunction()
 
-
+# find_github_repo:
+# This macro will try to import the requested target as a dependency. If
+# necessary, it will clone the repository from github using the provided URL.
+# An optional 3rd argument can be used to specify the branch or tag to clone.
+# If no branch/tag has been specified, the default tag (usually main) will
+# be cloned. Before cloning, the TARGET_HOME environment variable will be
+# checked for a local copy. This is the entire procedure
+#
+#   1. If $TARGET_HOME exists import the target from there
+#   2.1. Otherwise, clone the repo using the provided URL/branch
+#   2.2. the local copy will be stored in the current build directory
+#   2.3. $TARGET_HOME will set to the cloned repository
+#   3. Add $TARGET_HOME as a cmake subdirectory
+#   4. Check if the target really was defined, otherwise report an error
+#
+# Cloning private repositories: if you do not have a local copy in $TARGET_HOME
+# we will attempt to clone the repository from github using your SSH key. If
+# you cannot use ssh (for whatever reason) you can set the environment variable
+# GITHUB_TOKEN to your github token string. If GITHUB_TOKEN is set, ssh will
+# not be used.
+#
+# Variables created by find_github_repo
+#   - TARGET_FOUND: true of target was found, otherwise false
+#   - TARGET_HOME: if not set, will be set to a local source folder
+#   - TARGET_REPO: base url relative to github.com
+#   - TARGET_TAG: tag/branch to clone (empty for default branch)
+#   - TARGET_INCLUDE_DIRS: include directories of target
+#   - TARGET_VERSION: version of the target (or 0.0.0 if nothing was found)
+#
+# Examples:
+#   clone_github_repo(mwr "machineware-gmbh/mwr"): clones the default branch of
+#       github.com:machineware-gmbh/mwr.git, unless MWR_HOME is set to a valid
+#       local directory holding a CMakeLists.txt that defines mwr.
+#
+#   clone_github_repo(mwr "machineware-gmbh/mwr" "v2023.01.11"): clones the
+#       v2023.01.11 tag of github.com:machineware-gmbh/mwr.git, unless MWR_HOME
+#       is set to a valid local directory holding a CMakeLists.txt.
+#
+#   cmake -DMWR_TAG=my_dev_branch: overrides the tag used for fetching mwr on
+#       the command line when runinng cmake the first time.
 macro(find_github_repo target repo)
     string(TOUPPER ${target} _pfx)
     string(REPLACE "-" "_" _pfx ${_pfx})
+
+    set(${_pfx}_REPO "${repo}" CACHE STRING "${target} repository url")
+    set(${_pfx}_TAG "${ARGV2}" CACHE STRING "${target} repository tag/branch")
 
     if(NOT TARGET ${target})
         if(NOT DEFINED ${_pfx}_HOME AND DEFINED ENV{${_pfx}_HOME})
@@ -65,7 +106,11 @@ macro(find_github_repo target repo)
         endif()
 
         if(NOT DEFINED ${_pfx}_HOME)
-            set(${_pfx}_HOME "${CMAKE_CURRENT_BINARY_DIR}/${target}")
+            if(${_pfx}_TAG)
+                set(${_pfx}_HOME "${CMAKE_CURRENT_BINARY_DIR}/${target}-${${_pfx}_TAG}")
+            else()
+                set(${_pfx}_HOME "${CMAKE_CURRENT_BINARY_DIR}/${target}")
+            endif()
         endif()
 
         if(NOT EXISTS ${${_pfx}_HOME}/CMakeLists.txt)
