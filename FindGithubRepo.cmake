@@ -107,19 +107,19 @@ macro(find_github_repo target repo)
 
         if(NOT DEFINED ${_pfx}_HOME)
             if(${_pfx}_TAG)
-                set(${_pfx}_HOME "${CMAKE_CURRENT_BINARY_DIR}/${target}-${${_pfx}_TAG}")
+                set(${_pfx}_HOME "${CMAKE_CURRENT_BINARY_DIR}/${target}-${${_pfx}_TAG}-src")
             else()
-                set(${_pfx}_HOME "${CMAKE_CURRENT_BINARY_DIR}/${target}")
+                set(${_pfx}_HOME "${CMAKE_CURRENT_BINARY_DIR}/${target}-src")
             endif()
-        endif()
-
-        if(NOT EXISTS ${${_pfx}_HOME}/CMakeLists.txt)
             clone_github_repo(${target} ${repo})
         endif()
 
-        if(EXISTS ${${_pfx}_HOME}/CMakeLists.txt)
-            add_subdirectory(${${_pfx}_HOME} ${target} EXCLUDE_FROM_ALL)
+        if(NOT EXISTS ${${_pfx}_HOME}/CMakeLists.txt)
+            message(FATAL_ERROR "${_pfx}_HOME invalid, no CMakeLists.txt found at ${${_pfx}_HOME}")
         endif()
+
+        set(${_pfx}_HOME "${${_pfx}_HOME}" CACHE STRING "${target} source location")
+        add_subdirectory(${${_pfx}_HOME} ${target} EXCLUDE_FROM_ALL)
     endif()
 
     if(NOT TARGET ${target})

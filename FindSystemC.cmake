@@ -16,17 +16,19 @@
  #                                                                            #
  ##############################################################################
 
-if(DEFINED ENV{TARGET_ARCH})
-    set(SYSTEMC_TARGET_ARCH $ENV{TARGET_ARCH})
-elseif(DEFINED TARGET_ARCH)
-    set(SYSTEMC_TARGET_ARCH ${TARGET_ARCH})
-elseif(UNIX AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86")
-        set(SYSTEMC_TARGET_ARCH "linux")
-    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
-        set(SYSTEMC_TARGET_ARCH "linux64")
-    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
-        set(SYSTEMC_TARGET_ARCH "linuxaarch64")
+if(NOT DEFINED SYSTEMC_TARGET_ARCH)
+    if(DEFINED ENV{TARGET_ARCH})
+        set(SYSTEMC_TARGET_ARCH $ENV{TARGET_ARCH})
+    elseif(DEFINED TARGET_ARCH)
+        set(SYSTEMC_TARGET_ARCH ${TARGET_ARCH})
+    elseif(UNIX AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86")
+            set(SYSTEMC_TARGET_ARCH "linux")
+        elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+            set(SYSTEMC_TARGET_ARCH "linux64")
+        elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
+            set(SYSTEMC_TARGET_ARCH "linuxaarch64")
+        endif()
     endif()
 endif()
 
@@ -35,13 +37,13 @@ if(NOT DEFINED SYSTEMC_TARGET_ARCH)
 endif()
 
 if(NOT TARGET systemc)
-    if(NOT EXISTS "${SYSTEMC_HOME}")
+    if(NOT DEFINED SYSTEMC_HOME AND DEFINED ENV{SYSTEMC_HOME})
         set(SYSTEMC_HOME $ENV{SYSTEMC_HOME})
     endif()
 
-    if(NOT EXISTS "${SYSTEMC_HOME}")
+    if(NOT DEFINED SYSTEMC_HOME)
         find_package(Git REQUIRED)
-        set(SYSTEMC_HOME "${CMAKE_CURRENT_BINARY_DIR}/systemc")
+        set(SYSTEMC_HOME "${CMAKE_CURRENT_BINARY_DIR}/systemc-src")
         set(SYSTEMC_REPO "https://github.com/machineware-gmbh/systemc")
         set(SYSTEMC_TAG  "2.3.3-mwr")
         message(STATUS "Fetching SystemC from ${SYSTEMC_REPO}")
@@ -104,6 +106,10 @@ find_package_handle_standard_args(SystemC
     REQUIRED_VARS SYSTEMC_LIBRARIES SYSTEMC_INCLUDE_DIRS
     VERSION_VAR   SYSTEMC_VERSION)
 mark_as_advanced(SYSTEMC_LIBRARIES SYSTEMC_INCLUDE_DIRS)
+
+set(SYSTEMC_TARGET_ARCH ${SYSTEMC_TARGET_ARCH} CACHE STRING "SystemC target architecture")
+set(SYSTEMC_HOME ${SYSTEMC_HOME} CACHE STRING "SystemC home directory")
+set(SYSTEMC_VERSION ${SYSTEMC_VERSION} CACHE STRING "SystemC version")
 
 message(DEBUG "SYSTEMC_FOUND         " ${SYSTEMC_FOUND})
 message(DEBUG "SYSTEMC_HOME          " ${SYSTEMC_HOME})
