@@ -9,9 +9,9 @@
  ##############################################################################
 
 if(MSVC)
-    set(MWR_COMPILE_WARNINGS "/W3 /WX" CACHE STRING
-        "Specifies the default warning levels used during builds." FORCE)
+    set(MWR_COMPILER_WARN_FLAGS /W3 /WX CACHE STRING
+        "Specifies the compiler warning flags to be used during builds." FORCE)
 else()
-    set(MWR_COMPILE_WARNINGS "-Wall -Werror" CACHE STRING
-        "Specifies the default warning levels used during builds." FORCE)
+    set(MWR_COMPILER_WARN_FLAGS -Wall -Werror CACHE STRING
+        "Specifies the compiler warning flags to be used during builds." FORCE)
 endif()
