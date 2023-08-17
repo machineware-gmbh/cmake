@@ -14,7 +14,7 @@ function(clone_github_repo target repo)
 
     find_package(Git REQUIRED)
     set(ENV{GIT_TERMINAL_PROMPT} 0) # supress interactive git login prompts
-    set(cmd clone --depth 1)
+    set(cmd clone --depth 1 --recursive)
 
     if(${_pfx}_TAG)
         set(cmd ${cmd} --branch ${${_pfx}_TAG})
