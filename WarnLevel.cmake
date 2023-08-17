@@ -8,10 +8,10 @@
  #                                                                            #
  ##############################################################################
 
-function(target_compile_warnings target)
-    if(MSVC)
-        target_compile_options(${target} PRIVATE /W3 /WX)
-    else()
-        target_compile_options(${target} PRIVATE -Wall -Werror)
-    endif()
-endfunction()
+if(MSVC)
+    set(MWR_COMPILE_WARNINGS "/W3 /WX" CACHE STRING
+        "Specifies the default warning levels used during builds." FORCE)
+else()
+    set(MWR_COMPILE_WARNINGS "-Wall -Werror" CACHE STRING
+        "Specifies the default warning levels used during builds." FORCE)
+endif()
