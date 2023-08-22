@@ -21,6 +21,8 @@ if(NOT DEFINED SYSTEMC_TARGET_ARCH)
         elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
             set(SYSTEMC_TARGET_ARCH "linuxaarch64")
         endif()
+    elseif(MSVC)
+        set(SYSTEMC_TARGET_ARCH "msvc64")
     endif()
 endif()
 
