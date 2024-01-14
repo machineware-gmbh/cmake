@@ -3,6 +3,7 @@ Checks: >
   portability-*,
   performance-*,
   -performance-no-int-to-ptr,
+  -performance-avoid-endl,
   readability-identifier-naming,
   readability-redundant-*,
   -readability-redundant-member-init,
