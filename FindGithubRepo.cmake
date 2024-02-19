@@ -132,7 +132,7 @@ macro(find_github_repo target repo)
         endif()
     else()
         get_target_property(${_pfx}_HOME ${target} SOURCE_DIR)
-        get_target_property(${_pfx}_INCLUDE_DIRS ${target} INCLUDE_DIRECTORIES)
+        get_target_property(${_pfx}_INCLUDE_DIRS ${target} INTERFACE_INCLUDE_DIRECTORIES)
         get_target_property(${_pfx}_VERSION ${target} VERSION)
     endif()
 
