@@ -10,7 +10,7 @@
 
 function(do_target_link_whole_archives target visibility lib)
     if(MSVC)
-        target_link_libraries(${target} ${visibility} "/WHOLEARCHIVE:${lib}")
+        target_link_libraries(${target} ${visibility} -WHOLEARCHIVE:$<TARGET_FILE:${lib}> ${lib})
     elseif(APPLE)
         target_link_libraries(${target} ${visibility} -Wl,-force_load ${lib})
     else()
