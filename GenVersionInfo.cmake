@@ -38,17 +38,17 @@ if (${${_pfx}_VERSION_PATCH} LESS 10)
     set(${_pfx}_VERSION_PATCH 0${${_pfx}_VERSION_PATCH})
 endif()
 
-execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse HEAD
+execute_process(COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_CURRENT_SOURCE_DIR}/.git rev-parse HEAD
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 OUTPUT_VARIABLE ${_pfx}_GIT_REV
                 ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+execute_process(COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_CURRENT_SOURCE_DIR}/.git rev-parse --short HEAD
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 OUTPUT_VARIABLE ${_pfx}_GIT_REV_SHORT
                 ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-execute_process(COMMAND ${GIT_EXECUTABLE} diff --quiet
+execute_process(COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_CURRENT_SOURCE_DIR}/.git diff --quiet
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 RESULT_VARIABLE ${_pfx}_GIT_DIRTY
                 ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
