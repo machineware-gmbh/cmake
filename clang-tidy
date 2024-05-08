@@ -4,8 +4,10 @@ Checks: >
   performance-*,
   -performance-no-int-to-ptr,
   -performance-avoid-endl,
+  -performance-enum-size,
   readability-identifier-naming,
   readability-redundant-*,
+  -readability-redundant-casting,
   -readability-redundant-member-init,
   clang-analyzer-*,
 
