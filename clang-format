@@ -5,6 +5,7 @@ BasedOnStyle: Google
 ColumnLimit: 79
 UseTab: Never
 IndentWidth: 4
+InsertNewlineAtEOF: true
 IndentCaseLabels: false
 
 PointerAlignment: Left
