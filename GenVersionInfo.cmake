@@ -26,15 +26,22 @@ find_package(Git REQUIRED)
 string(TOUPPER ${PROJECT_NAME} _pfx)
 string(REPLACE "-" "_" _pfx ${_pfx})
 
+# newer versions of cmake retain the leading zero, remove it here, since we
+# want to use it as an integer and leading zeros are interpreted as octal.
+string(REGEX REPLACE "^0" "" PROJECT_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
+string(REGEX REPLACE "^0" "" PROJECT_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
+
 set(${_pfx}_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(${_pfx}_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 set(${_pfx}_VERSION_PATCH ${PROJECT_VERSION_PATCH})
 
-if(CMAKE_MINIMUM_REQUIRED_VERSION VERSION_LESS "3.16" AND ${_pfx}_VERSION_MINOR LESS 10)
+# <name>_VERSION_MINOR and <name>_VERSION_PATCH should retain the leading zero,
+# so add it back here,
+if(${_pfx}_VERSION_MINOR LESS 10)
     set(${_pfx}_VERSION_MINOR 0${${_pfx}_VERSION_MINOR})
 endif()
 
-if(CMAKE_MINIMUM_REQUIRED_VERSION VERSION_LESS "3.16" AND ${_pfx}_VERSION_PATCH LESS 10)
+if(${_pfx}_VERSION_PATCH LESS 10)
     set(${_pfx}_VERSION_PATCH 0${${_pfx}_VERSION_PATCH})
 endif()
 
