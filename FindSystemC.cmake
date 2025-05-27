@@ -45,9 +45,8 @@ if(NOT TARGET systemc)
         find_package(Git REQUIRED)
         set(SYSTEMC_HOME "${CMAKE_CURRENT_BINARY_DIR}/systemc-src")
         set(SYSTEMC_REPO "https://github.com/machineware-gmbh/systemc")
-        set(SYSTEMC_TAG  "2.3.3-mwr")
         message(STATUS "Fetching SystemC from ${SYSTEMC_REPO}")
-        execute_process(COMMAND ${GIT_EXECUTABLE} clone --depth 1 --branch ${SYSTEMC_TAG} ${SYSTEMC_REPO} ${SYSTEMC_HOME}
+        execute_process(COMMAND ${GIT_EXECUTABLE} clone --depth 1 ${SYSTEMC_REPO} ${SYSTEMC_HOME}
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                         ERROR_QUIET)
     endif()
