@@ -26,10 +26,10 @@ endif()
 # Address Sanitizer
 set(CMAKE_C_FLAGS_ASAN
     "-fsanitize=address ${sani_c_flags}" CACHE STRING
-    "Flags used by the C++ compiler during ASAN builds." FORCE)
+    "Flags used by the C compiler during ASAN builds." FORCE)
 set(CMAKE_CXX_FLAGS_ASAN
     "-fsanitize=address ${sani_cxx_flags}" CACHE STRING
-    "Flags used by the C compiler during ASAN builds." FORCE)
+    "Flags used by the C++ compiler during ASAN builds." FORCE)
 set(CMAKE_EXE_LINKER_FLAGS_ASAN
     "-fsanitize=address ${sani_linker_flags}" CACHE STRING
     "Flags used for linking binaries during ASAN builds." FORCE)
@@ -44,10 +44,10 @@ mark_as_advanced(CMAKE_C_FLAGS_ASAN CMAKE_CXX_FLAGS_ASAN
 # Thread Sanitizer
 set(CMAKE_C_FLAGS_TSAN
     "-fsanitize=thread ${sani_c_flags}" CACHE STRING
-    "Flags used by the C++ compiler during TSAN builds." FORCE)
+    "Flags used by the C compiler during TSAN builds." FORCE)
 set(CMAKE_CXX_FLAGS_TSAN
     "-fsanitize=thread ${sani_cxx_flags}" CACHE STRING
-    "Flags used by the C compiler during TSAN builds." FORCE)
+    "Flags used by the C++ compiler during TSAN builds." FORCE)
 set(CMAKE_EXE_LINKER_FLAGS_TSAN
     "-fsanitize=thread ${sani_linker_flags}" CACHE STRING
     "Flags used for linking binaries during TSAN builds." FORCE)
@@ -62,10 +62,10 @@ mark_as_advanced(CMAKE_C_FLAGS_TSAN CMAKE_CXX_FLAGS_TSAN
 # Undefined Behavior Sanitizer
 set(CMAKE_C_FLAGS_UBSAN
     "-fsanitize=undefined ${sani_c_flags}" CACHE STRING
-    "Flags used by the C++ compiler during UBSAN builds." FORCE)
+    "Flags used by the C compiler during UBSAN builds." FORCE)
 set(CMAKE_CXX_FLAGS_UBSAN
     "-fsanitize=undefined ${sani_cxx_flags}" CACHE STRING
-    "Flags used by the C compiler during UBSAN builds." FORCE)
+    "Flags used by the C++ compiler during UBSAN builds." FORCE)
 set(CMAKE_EXE_LINKER_FLAGS_UBSAN
     "-fsanitize=undefined ${sani_linker_flags}" CACHE STRING
     "Flags used for linking binaries during UBSAN builds." FORCE)
