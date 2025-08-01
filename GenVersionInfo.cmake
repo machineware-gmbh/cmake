@@ -21,7 +21,6 @@
 #     <PROJECT_NAME>_VERSION_INT
 #     <PROJECT_NAME>_VERSION_STRING
 
-find_package(Git REQUIRED)
 
 string(TOUPPER ${PROJECT_NAME} _pfx)
 string(REPLACE "-" "_" _pfx ${_pfx})
@@ -45,20 +44,24 @@ if(${_pfx}_VERSION_PATCH LESS 10)
     set(${_pfx}_VERSION_PATCH 0${${_pfx}_VERSION_PATCH})
 endif()
 
-execute_process(COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_CURRENT_SOURCE_DIR}/.git rev-parse HEAD
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                OUTPUT_VARIABLE ${_pfx}_GIT_REV
-                ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+find_package(Git)
 
-execute_process(COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_CURRENT_SOURCE_DIR}/.git rev-parse --short HEAD
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                OUTPUT_VARIABLE ${_pfx}_GIT_REV_SHORT
-                ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+if(GIT_FOUND)
+    execute_process(COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_CURRENT_SOURCE_DIR}/.git rev-parse HEAD
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                    OUTPUT_VARIABLE ${_pfx}_GIT_REV
+                    ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-execute_process(COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_CURRENT_SOURCE_DIR}/.git diff --quiet
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                RESULT_VARIABLE ${_pfx}_GIT_DIRTY
-                ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_CURRENT_SOURCE_DIR}/.git rev-parse --short HEAD
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                    OUTPUT_VARIABLE ${_pfx}_GIT_REV_SHORT
+                    ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+    execute_process(COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_CURRENT_SOURCE_DIR}/.git diff --quiet
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                    RESULT_VARIABLE ${_pfx}_GIT_DIRTY
+                    ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+endif()
 
 if(NOT ${_pfx}_GIT_REV)
     set(${_pfx}_GIT_REV "nogit")
