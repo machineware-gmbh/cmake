@@ -46,7 +46,17 @@ if(NOT TARGET systemc)
         set(SYSTEMC_HOME "${CMAKE_CURRENT_BINARY_DIR}/systemc-src")
         set(SYSTEMC_REPO "https://github.com/machineware-gmbh/systemc")
         message(STATUS "Fetching SystemC from ${SYSTEMC_REPO}")
-        execute_process(COMMAND ${GIT_EXECUTABLE} clone --depth 1 ${SYSTEMC_REPO} ${SYSTEMC_HOME}
+
+        set(BRANCH_ARG "")
+        if (ENV{SYSTEMC_TAG})
+            set(BRANCH_ARG --branch ENV{SYSTEMC_TAG})
+        endif()
+        if (SYSTEMC_TAG)
+            set(BRANCH_ARG --branch ${SYSTEMC_TAG})
+        endif()
+
+        execute_process(COMMAND ${GIT_EXECUTABLE} clone --depth 1 ${BRANCH_ARG}
+                                ${SYSTEMC_REPO} ${SYSTEMC_HOME}
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                         ERROR_QUIET)
     endif()
