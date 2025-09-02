@@ -10,12 +10,14 @@
 
 function(do_target_link_whole_archives target visibility lib)
     if(MSVC)
-        target_link_libraries(${target} ${visibility} -WHOLEARCHIVE:$<TARGET_FILE:${lib}> ${lib})
+        target_link_libraries(${target} ${visibility} -WHOLEARCHIVE:$<TARGET_FILE:${lib}>)
     elseif(APPLE)
-        target_link_libraries(${target} ${visibility} -Wl,-force_load ${lib})
+        target_link_libraries(${target} ${visibility} -Wl,-force_load $<TARGET_FILE:${lib}>)
     else()
-        target_link_libraries(${target} ${visibility} -Wl,--whole-archive ${lib} -Wl,--no-whole-archive)
+        target_link_libraries(${target} ${visibility} -Wl,--whole-archive $<TARGET_FILE:${lib}> -Wl,--no-whole-archive)
     endif()
+    # link again to pull in transitive dependencies normally
+    target_link_libraries(${target} ${visibility} ${lib})
 endfunction()
 
 function(target_link_whole_archives target)
