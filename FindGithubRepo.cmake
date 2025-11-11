@@ -98,6 +98,10 @@ macro(find_github_repo target repo)
         endif()
 
         if(NOT DEFINED ${_pfx}_HOME)
+            if(MWR_NO_AUTOCLONE OR $ENV{MWR_NO_AUTOCLONE})
+                message(FATAL_ERROR "${_pfx}_HOME invalid and autoclone disabled")
+             endif()
+
             if(${_pfx}_TAG)
                 set(${_pfx}_HOME "${CMAKE_CURRENT_BINARY_DIR}/${target}-${${_pfx}_TAG}-src")
             else()
