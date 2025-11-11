@@ -98,11 +98,9 @@ macro(find_github_repo target repo)
         endif()
 
         if(NOT DEFINED ${_pfx}_HOME)
-            if(DEFINED MWR_NO_AUTOCLONE OR DEFINED ENV{MWR_NO_AUTOCLONE})
-                message(FATAL_ERROR "Autoclone is disabled.\n"
-                    "No home directory was found for target '${target}'.\n"
-                    "Please ensure that either autoclone is enabled or a valid home directory is specified.\n")
-            endif()
+            if(MWR_NO_AUTOCLONE OR ENV{MWR_NO_AUTOCLONE})
+                message(FATAL_ERROR "${_pfx}_HOME invalid and autoclone disabled")
+             endif()
 
             if(${_pfx}_TAG)
                 set(${_pfx}_HOME "${CMAKE_CURRENT_BINARY_DIR}/${target}-${${_pfx}_TAG}-src")
