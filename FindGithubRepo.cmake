@@ -101,7 +101,7 @@ macro(find_github_repo target repo)
             if(NOT MWR_NO_AUTOCLONE)
                 set(MWR_NO_AUTOCLONE $ENV{MWR_NO_AUTOCLONE})
             endif()
-            if(NOT MWR_NO_AUTOCLONE)
+            if(MWR_NO_AUTOCLONE)
                 message(FATAL_ERROR "${_pfx}_HOME invalid and autoclone disabled")
             endif()
 
