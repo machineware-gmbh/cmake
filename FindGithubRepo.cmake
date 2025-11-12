@@ -13,35 +13,86 @@ function(clone_github_repo target repo)
     string(REPLACE "-" "_" _pfx ${_pfx})
 
     find_package(Git REQUIRED)
-    set(ENV{GIT_TERMINAL_PROMPT} 0) # supress interactive git login prompts
-    set(cmd clone --depth 1 --recursive)
+    set(ENV{GIT_TERMINAL_PROMPT} 0) # suppress interactive git login prompts
+
+    set(cmd clone --depth 1)
+    set(max_retries 2)
+    set(retry_count 0)
 
     if(${_pfx}_TAG)
-        set(cmd ${cmd} --branch ${${_pfx}_TAG})
+        list(APPEND cmd --branch ${${_pfx}_TAG})
         message(STATUS "Fetching ${target} from ${${_pfx}_REPO} [${${_pfx}_TAG}]")
     else()
         message(STATUS "Fetching ${target} from ${${_pfx}_REPO} [default branch]")
     endif()
 
     set(url "https://github.com/${${_pfx}_REPO}")
-    execute_process(COMMAND ${GIT_EXECUTABLE} ${cmd} ${url} ${${_pfx}_HOME}
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-                    ERROR_VARIABLE err RESULT_VARIABLE res OUTPUT_QUIET)
-    if(NOT res)
-        return()
+
+    while(retry_count LESS max_retries)
+        execute_process(
+            COMMAND ${GIT_EXECUTABLE} ${cmd} ${url} ${${_pfx}_HOME}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            ERROR_VARIABLE err
+            RESULT_VARIABLE res
+            OUTPUT_QUIET
+        )
+
+        if(res EQUAL 0)
+            break()
+        endif()
+
+        if(DEFINED ENV{GITHUB_TOKEN})
+            set(url "https://oauth2:$ENV{GITHUB_TOKEN}@github.com/${${_pfx}_REPO}")
+        else()
+            set(url "git@github.com:${${_pfx}_REPO}")
+        endif()
+
+        execute_process(
+            COMMAND ${GIT_EXECUTABLE} ${cmd} ${url} ${${_pfx}_HOME}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            ERROR_VARIABLE err
+            RESULT_VARIABLE res
+            OUTPUT_QUIET
+        )
+
+        if(res EQUAL 0)
+            break()
+        endif()
+
+        math(EXPR retry_count "${retry_count} + 1")
+        if(retry_count LESS max_retries)
+            message(WARNING "Cloning '${target}' failed (attempt ${retry_count}/${max_retries}). Retrying...")
+        endif()
+    endwhile()
+
+    if(NOT res EQUAL 0)
+        message(FATAL_ERROR "Cloning '${target}' failed after ${max_retries} attempts.\n${err}")
     endif()
 
-    if(DEFINED ENV{GITHUB_TOKEN})
-        set(url "https://oauth2:$ENV{GITHUB_TOKEN}@github.com/${${_pfx}_REPO}")
-    else()
-        set(url "git@github.com:${${_pfx}_REPO}")
-    endif()
+    set(cmd submodule update --init --recursive --depth 1)
+    set(retry_count 0)
 
-    execute_process(COMMAND ${GIT_EXECUTABLE} ${cmd} ${url} ${${_pfx}_HOME}
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-                    ERROR_VARIABLE err RESULT_VARIABLE res OUTPUT_QUIET)
-    if(res)
-        message(FATAL_ERROR "${err}")
+    while(retry_count LESS max_retries)
+        execute_process(
+            COMMAND ${GIT_EXECUTABLE} ${cmd}
+            WORKING_DIRECTORY ${${_pfx}_HOME}
+            ERROR_VARIABLE err
+            RESULT_VARIABLE res
+            OUTPUT_QUIET
+        )
+
+        if(res EQUAL 0)
+            break()
+        endif()
+
+        math(EXPR retry_count "${retry_count} + 1")
+        if(retry_count LESS max_retries)
+            message(WARNING "Submodule init for '${target}' failed (attempt ${retry_count}/${max_retries}). Retrying...")
+        endif()
+    endwhile()
+
+    if(NOT res EQUAL 0)
+        message(FATAL_ERROR "Submodule init for '${target}' failed after ${max_retries} attempts.\n${err}")
     endif()
 endfunction()
 
