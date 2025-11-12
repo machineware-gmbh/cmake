@@ -66,7 +66,7 @@ function(clone_github_repo target repo)
     endwhile()
 
     if(NOT res EQUAL 0)
-        message(FATAL_ERROR "Cloning '${target}' failed after ${max_retries} attempts.\nError: ${err}")
+        message(FATAL_ERROR "Cloning '${target}' failed after ${max_retries} attempts.\n${err}")
     endif()
 
     set(cmd submodule update --init --recursive --depth 1)
@@ -92,7 +92,7 @@ function(clone_github_repo target repo)
     endwhile()
 
     if(NOT res EQUAL 0)
-        message(FATAL_ERROR "Submodule init for '${target}' failed after ${max_retries} attempts.\nError: ${err}")
+        message(FATAL_ERROR "Submodule init for '${target}' failed after ${max_retries} attempts.\n${err}")
     endif()
 endfunction()
 
