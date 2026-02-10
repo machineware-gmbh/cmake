@@ -137,6 +137,8 @@ endfunction()
 #   cmake -DMWR_TAG=my_dev_branch: overrides the tag used for fetching mwr on
 #       the command line when runinng cmake the first time.
 macro(find_github_repo target repo)
+    option(MWR_NO_AUTOCLONE "Disable automatic cloning of github repositories" OFF)
+
     string(TOUPPER ${target} _pfx)
     string(REPLACE "-" "_" _pfx ${_pfx})
 
