@@ -38,3 +38,10 @@ SortUsingDeclarations: false
 
 Cpp11BracedListStyle: false
 PenaltyBreakAssignment: 2000
+
+RemoveBracesLLVM: true
+NumericLiteralCase:
+  ExponentLetter: Lower
+  HexDigit: Lower
+  Prefix: Lower
+  Suffix: Lower
