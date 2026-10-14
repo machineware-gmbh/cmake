@@ -26,7 +26,7 @@ function(target_link_whole_archives target)
     foreach(lib IN LISTS WHOLE_PRIVATE)
         do_target_link_whole_archives(${target} PRIVATE ${lib})
     endforeach()
-
+ 
     foreach(lib IN LISTS WHOLE_PUBLIC)
         do_target_link_whole_archives(${target} PUBLIC ${lib})
     endforeach()
