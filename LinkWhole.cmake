@@ -3,8 +3,8 @@
  # Copyright (C) 2023 MachineWare GmbH                                        #
  # All Rights Reserved                                                        #
  #                                                                            #
- # This is work is licensed under the terms described in the LICENSE file     #
- # found in the root directory of this source tree.                           #
+ # This work is licensed under the terms described in the LICENSE file found  #
+ # in the root directory of this source tree.                                 #
  #                                                                            #
  ##############################################################################
 
@@ -26,7 +26,7 @@ function(target_link_whole_archives target)
     foreach(lib IN LISTS WHOLE_PRIVATE)
         do_target_link_whole_archives(${target} PRIVATE ${lib})
     endforeach()
- 
+
     foreach(lib IN LISTS WHOLE_PUBLIC)
         do_target_link_whole_archives(${target} PUBLIC ${lib})
     endforeach()

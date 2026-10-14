@@ -3,8 +3,8 @@
  # Copyright (C) 2022 MachineWare GmbH                                        #
  # All Rights Reserved                                                        #
  #                                                                            #
- # This is work is licensed under the terms described in the LICENSE file     #
- # found in the root directory of this source tree.                           #
+ # This work is licensed under the terms described in the LICENSE file found  #
+ # in the root directory of this source tree.                                 #
  #                                                                            #
  ##############################################################################
 
@@ -98,7 +98,7 @@ file(STRINGS ${_sysc_ver_file} _systemc_ver REGEX
      "^#[\t ]*define[\t ]+SC_VERSION_(MAJOR|MINOR|PATCH)[\t ]+([0-9]+)$")
 foreach(VPART MAJOR MINOR PATCH)
     foreach(VLINE ${_systemc_ver})
-        if(VLINE MATCHES 
+        if(VLINE MATCHES
            "^#[\t ]*define[\t ]+SC_VERSION_${VPART}[\t ]+([0-9]+)$")
             set(SYSTEMC_VERSION_${VPART} ${CMAKE_MATCH_1})
             if(SYSTEMC_VERSION)

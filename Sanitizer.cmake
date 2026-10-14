@@ -3,8 +3,8 @@
  # Copyright (C) 2022 MachineWare GmbH                                        #
  # All Rights Reserved                                                        #
  #                                                                            #
- # This is work is licensed under the terms described in the LICENSE file     #
- # found in the root directory of this source tree.                           #
+ # This work is licensed under the terms described in the LICENSE file found  #
+ # in the root directory of this source tree.                                 #
  #                                                                            #
  ##############################################################################
 
@@ -18,7 +18,7 @@ if (CMAKE_C_COMPILER_ID STREQUAL "GNU" AND
     set(sani_c_flags "${sani_c_flags} -fno-var-tracking-assignments")
 endif()
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND 
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
     CMAKE_CXX_COMPILER_VERSION VERSION_LESS "12.0.0")
     set(sani_cxx_flags "${sani_cxx_flags} -fno-var-tracking-assignments")
 endif()
