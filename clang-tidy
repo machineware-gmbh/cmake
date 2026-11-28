@@ -2,6 +2,7 @@ Checks: >
   -*,
   portability-*,
   -portability-template-virtual-member-function,
+  -portability-no-assembler,
   performance-*,
   -performance-no-int-to-ptr,
   -performance-avoid-endl,
